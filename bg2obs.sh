@@ -117,15 +117,14 @@ do
 
 done
 
-  #----------------------------------------------------------------------------------
-  # The Output of this text needs to be formatted slightly to fit with use in Obsidian
-  # Enable Regex and run find and replace:
-    # *Clean up unwanted headers*
-      # Find: ^[\w\s]*(######)
-      # Replace: \n$1
-      # file: *.md
-    # Clean up verses
-      # Find: (######\sv\d)
-      # Replace: \n\n$1\n
-      # file: *.md
-  #----------------------------------------------------------------------------------
+# Split the verses into separate notes
+
+# Choose the appropriate options for the conversion script based on `boldwords` and `headers`
+if ${splitverses} == "true"; then
+  source versesplit.sh
+  
+  if ${masterfiles} == "true"; then
+    source masterfiles.sh
+  fi
+
+fi
