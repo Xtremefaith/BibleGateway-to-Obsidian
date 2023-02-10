@@ -68,8 +68,17 @@ filename=${export_prefix}$export_number # Setting the filename
     text=$(ruby BibleGateway-to-Markdown/bg2md.rb -e -c -f -l -r -v "${translation}" ${book} ${chapter}) # This calls the 'bg2md_mod script'
   fi
 
+    # Remove unwanted headers from the text
+    text=$(echo $text | sed 's/^(.*?)v1/v1/') 
 
-  text=$(echo $text | sed 's/^(.*?)v1/v1/') # Deleting unwanted headers
+    # Remove Chapter Header
+    text=$(echo "$text" | sed 's/.*##### Chapter [0-9][0-9]* //g')
+
+    # Fix Verse Headers
+    text=$(echo "$text" | sed -E 's/###### ([0-9]+)/\nv\1 /g')
+
+    # Add line breaks
+    text=$(echo "$text" | awk '{gsub("v[0-9]","\\n\\n&")};1')
 
   # Formatting the title for markdown
   title="# ${book} ${chapter}"
