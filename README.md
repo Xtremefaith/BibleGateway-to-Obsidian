@@ -24,8 +24,10 @@ In order to run the scripts, we will need to install ruby. Ruby comes pre-instal
 ### Downloading BibleGateway-to-Markdown.rb
 Follow the instructions to download and set up [jgclark's BibleGateway-to-Markdown](https://github.com/jgclark/BibleGateway-to-Markdown).
 
-Note: If you are cloning this repository with git please use the `--recurse-submodules` with git to download the submodules
-*`git clone --recurse-submodules https://github.com/joebuhlig/BibleGateway-to-Obsidian.git`
+**NOTE**: You don't need to download separate if you are cloning this repository git as it is a submodule. Please use the `--recurse-submodules` with git to download the submodules
+```
+git clone --recurse-submodules https://github.com/joebuhlig/BibleGateway-to-Obsidian.git
+```
 
 ## Usage
 
@@ -39,33 +41,19 @@ Open terminal. Use the following command to navigate to the folder in which both
 ### 2. Run the script
 Once you are in the directory, run `bash bg2obs.sh`. This will run the bash script.
 
-`NOTE`: In this directory, a folder called `ESV` with subfolders like `01 - Genesis`, `02 - Exodus` and so on will be created.
+**NOTE**: Update the `config.sh` with the text editor first if you would like to adjust any settings prior to executing the command. Default settings include:
+- Translation is `ESV`
+- Headers is `false` - *include headers*
+- Bold letters is `false` - *set the words of Jesus to bold*
+- Split verses is `true` - *splits the verses into separate folders for each chapter and files for each verse*
+- Master files is `true` - *creats a master file for each chapter folder (only available if split verses is `true`)
 
-Within the `bg2obs.sh` file you have the options to include headers and set the words of Jesus to bold. By default, both options are set to `false`.
+***WARNING**: During the execution of the script your clipboard will be unusable as it is used to capture the contents pulled from Bible Gateway*
 
-### 3. Format the text in a text editor
-We will need to format the output to work well in Obsidian.
-1. Open [Atom](https://atom.io/) (or the like).
-2. Open the `ESV` folder with `File > Add Project Folder…` (or `Shift + Command + O`
-3. Open project-wide search with `Shift + Command + F`
+### 3. (Optional) Rename Folders by Numerical Order
+Run `bash rename-folders.sh` to add book numbers to the folder for sorting.
 
-Next up we are going to run two [Regex](https://en.wikipedia.org/wiki/Regular_expression)-searches to find and replace in our whole project.
-1. Enable Regex. Click the `.*` Icon.
-2. Run the first search. This clears unnecessary headers:
-* Find: `#.*(#####\D[1]\D)`
-* Replace: `#$1`
-* file: `*.md`
-3. Run the second search. This formats verses into h6:
-* Find: `######\s([0-9]\s|[0-9][0-9]\s|[0-9][0-9][0-9]\s)`
-* Replace: `\n\nv$1`
-* file: `*.md`
-(Some crossreferences are sometimes still included, run `\<crossref intro.*crossref\>` to delete.)
-
-### 4. Split each virse to it's own file.
-
-1. Run `bash versesplit.sh` to split the chapters in to seprate verse files.
-2. Run `bash masterfiles.sh` to create the link file for each book. This only works if you split the files, do not run on it's own.
-3. (Optional) Run `bash rename-folders.sh` to add book numbers to the folder for sorting.
+- `NOTE`: With this option, the subfolders within your translation folder (ie. `ESV`) will be updated with sequential prefixes like `01 - Genesis`, `02 - Exodus` and so on.
 
 **There you go!** Now, just move the "ESV" folder into your Obsidian vault. You can use the provided `The Bible.md` file as an overview file. (Not setup with folder numbers)
 
