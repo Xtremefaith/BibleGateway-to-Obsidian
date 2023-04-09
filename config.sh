@@ -4,6 +4,8 @@ boldwords="false" # Set 'true' for bolding words of Jesus
 headers="false" # Set 'true' for including editorial headers
 splitverses="true" # Set 'true' to split the verse into separate folders and notes afterwards
 masterfiles="true" # Set 'true' to generate a master file (only works if verses are split)
+versesections="true" # Set 'true' to insert ^verse sections and references (only works if verses are split)
+verseheaders="true" # Set 'true' to include Notes and Reference Headers in the verse notes
 
 book_counter=0 # Setting the counter to 0
 book_counter_max=66 # Setting the max amount to 66, since there are 66 books we want to import
