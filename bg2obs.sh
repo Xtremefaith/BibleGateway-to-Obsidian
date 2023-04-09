@@ -127,4 +127,8 @@ if ${splitverses} == "true"; then
     source masterfiles.sh
   fi
 
+  if ${versesections} == "true"; then
+    source versesections.sh
+  fi
+
 fi
