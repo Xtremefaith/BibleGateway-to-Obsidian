@@ -30,6 +30,8 @@ for book_folder in "${translation}"/*/; do
             if [ "$verse_file" != "$chapter_note_file" ]; then
                 verse_number=$(basename "${verse_file%.*}" | cut -d '.' -f 2)
                 verse_note=$(basename "$(basename "${verse_file%.*}")")
+
+                # Add translucent verse reference to the chapter note
                 echo "v${verse_number} ![[${verse_note}#^verse]]" >> "$chapter_note_file"
 
                 # Insert ^verse after the first line of text in verse note
@@ -43,7 +45,6 @@ for book_folder in "${translation}"/*/; do
                                 echo "Skipping file: $(basename "$verse_file") (already contains Notes header)"
                             else
                                 echo -e "## Notes\n- \n\n## References\n- " >> "$verse_file"
-                                # echo "Notes and References headers added to $(basename "$verse_file")."
                             fi
                         fi
                         # echo " ^verse inserted into $(basename "$verse_file")."
@@ -51,6 +52,36 @@ for book_folder in "${translation}"/*/; do
                         echo "Error inserting ^verse into $(basename "$verse_file"). Exiting..."
                         exit 1
                     fi
+                fi
+
+                # Add breadcrumb navigation to the verse notes
+                if [ "$versebreadcrumbs" = true ]; then
+                    chapter_name=$(basename "$chapter_folder")
+                    chapter_link="[[${chapter_name}]]"
+                    
+                    prev_verse=$((verse_number-1))
+                    prev_file=$(printf "%s%s.%.0f.md" "$chapter_folder" "$chapter_name" "$prev_verse")
+                    prev_link=""
+                    
+                    next_verse=$((verse_number+1))
+                    next_file=$(printf "%s%s.%.0f.md" "$chapter_folder" "$chapter_name" "$next_verse")
+                    next_link=""
+
+                    if [ -f "$prev_file" ]; then
+                        prev_link="[[${chapter_name}.${prev_verse} | <<]] \| "
+                    fi
+                    if [ -f "$next_file" ]; then
+                        next_link=" \| [[${chapter_name}.${next_verse} | >>]]"
+                    fi
+                    breadcrumb="${prev_link}${chapter_link}${next_link}"
+                    
+                    if awk -v b="${breadcrumb}\n\n" 'NR==1{$0=b $0}1' "$verse_file" > temp_file && mv temp_file "$verse_file"; then
+                        echo "Breadcrumb navigation added to $(basename "$verse_file")."
+                    else
+                        echo "Error adding breadcrumb to $(basename "$verse_file"). Exiting..."
+                        exit 1
+                    fi
+
                 fi
             fi
         done
