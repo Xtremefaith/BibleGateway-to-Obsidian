@@ -30,6 +30,8 @@ for book_folder in "${translation}"/*/; do
             if [ "$verse_file" != "$chapter_note_file" ]; then
                 verse_number=$(basename "${verse_file%.*}" | cut -d '.' -f 2)
                 verse_note=$(basename "$(basename "${verse_file%.*}")")
+
+                # Add translucent verse reference to the chapter note
                 echo "v${verse_number} ![[${verse_note}#^verse]]" >> "$chapter_note_file"
 
                 # Insert ^verse after the first line of text in verse note
@@ -43,7 +45,6 @@ for book_folder in "${translation}"/*/; do
                                 echo "Skipping file: $(basename "$verse_file") (already contains Notes header)"
                             else
                                 echo -e "## Notes\n- \n\n## References\n- " >> "$verse_file"
-                                # echo "Notes and References headers added to $(basename "$verse_file")."
                             fi
                         fi
                         # echo " ^verse inserted into $(basename "$verse_file")."
