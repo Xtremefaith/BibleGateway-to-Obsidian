@@ -75,7 +75,7 @@ for book_folder in "${translation}"/*/; do
                     fi
                     breadcrumb="${prev_link}${chapter_link}${next_link}"
                     
-                    if awk -v b="$breadcrumb" 'NR==1{$0=b"\n"$0}1' "$verse_file" > temp_file && mv temp_file "$verse_file"; then
+                    if awk -v b="${breadcrumb}\n\n" 'NR==1{$0=b $0}1' "$verse_file" > temp_file && mv temp_file "$verse_file"; then
                         echo "Breadcrumb navigation added to $(basename "$verse_file")."
                     else
                         echo "Error adding breadcrumb to $(basename "$verse_file"). Exiting..."
