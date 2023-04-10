@@ -52,6 +52,40 @@ for book_folder in "${translation}"/*/; do
                         exit 1
                     fi
                 fi
+
+                # Add breadcrumb navigation to the verse notes
+                if [ "$versebreadcrumbs" = true ]; then
+                    chapter_name=$(basename "$chapter_folder")
+                    echo "Chapter Name: ${chapter_name}"
+                    
+                    prev_verse=$((verse_number-1))
+                    prev_file=$(printf "%s%s.%.0f.md" "$chapter_folder" "$chapter_name" "$prev_verse")
+                    
+                    next_verse=$((verse_number+1))
+                    next_file=$(printf "%s%s.%.0f.md" "$chapter_folder" "$chapter_name" "$next_verse")
+                    
+                    chapter_link="[[${chapter_name}]]"
+                    echo "Chapter Link: ${chapter_link}"
+                    
+                    prev_link=""
+                    next_link=""
+
+                    if [ -f "$prev_file" ]; then
+                        prev_link="[[${chapter_name}.${prev_verse} | <<]] \| "
+                    fi
+                    if [ -f "$next_file" ]; then
+                        next_link=" \| [[${chapter_name}.${next_verse} | >>]]"
+                    fi
+                    breadcrumb="${prev_link}${chapter_link}${next_link}"
+                    
+                    if awk -v b="$breadcrumb" 'NR==1{$0=b"\n"$0}1' "$verse_file" > temp_file && mv temp_file "$verse_file"; then
+                        echo "Breadcrumb navigation added to $(basename "$verse_file")."
+                    else
+                        echo "Error adding breadcrumb to $(basename "$verse_file"). Exiting..."
+                        exit 1
+                    fi
+
+                fi
             fi
         done
 
